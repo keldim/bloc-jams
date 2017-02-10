@@ -39,39 +39,39 @@ var createSongRow = function(songNumber, songName, songLength) {
      var clickHandler = function() {
          var songNumber = parseInt($(this).attr('data-song-number'));
 
-	if (currentlyPlayingSongNumber !== null) {
-		// Revert to song number for currently playing song because user started playing new song.
-		 var currentlyPlayingCell = getSongNumberCell(currentlyPlayingSongNumber);
-		 currentlyPlayingCell.html(currentlyPlayingSongNumber);
-	}
-	 if (currentlyPlayingSongNumber !== songNumber) {
+         if (currentlyPlayingSongNumber !== null) {
+             // Revert to song number for currently playing song because user started playing new song.
+		     var currentlyPlayingCell = getSongNumberCell(currentlyPlayingSongNumber);
+		     currentlyPlayingCell.html(currentlyPlayingSongNumber);
+         }
+	     if (currentlyPlayingSongNumber !== songNumber) {
 		// Switch from Play -> Pause button to indicate new song is playing.
-		$(this).html(pauseButtonTemplate);
-		setSong(songNumber);
-         currentSoundFile.play();
-          updatePlayerBarSong();
-	} else if (currentlyPlayingSongNumber === songNumber) {
-		// Switch from Pause -> Play button to pause currently playing song.
-		if (currentSoundFile.isPasued()) {
-             $(this).html(pauseButtonTemplate);
-		$('.main-controls .play-pause').html(playerBarPauseButton);
+		     setSong(songNumber);
              currentSoundFile.play();
-        }
-        
-        else {
-            $(this).html(playButtonTemplate);
-		$('.main-controls .play-pause').html(playerBarPlayButton);
-            currentSoundFile.pause();  
-        }
+             $(this).html(pauseButtonTemplate); 
+             updatePlayerBarSong();
+         } 
+         else if (currentlyPlayingSongNumber === songNumber) {
+		// Switch from Pause -> Play button to pause currently playing song.
+             if (currentSoundFile.isPaused()) {
+                      $(this).html(pauseButtonTemplate);
+		              $('.main-controls .play-pause').html(playerBarPauseButton);
+                      currentSoundFile.play();
+                }
+                else {
+                    $(this).html(playButtonTemplate);
+		      $('.main-controls .play-pause').html(playerBarPlayButton);
+                    currentSoundFile.pause();  
+                }
         }
      };
     
      var onHover = function(event) {
-        var songNumberCell = $(this).find('.song-item-number');
-        var songNumber = parseInt(songNumberCell.attr('data-song-number'));
+         var songNumberCell = $(this).find('.song-item-number');
+         var songNumber = parseInt(songNumberCell.attr('data-song-number'));
 
          if (songNumber !== currentlyPlayingSongNumber) {
-            songNumberCell.html(playButtonTemplate);
+              songNumberCell.html(playButtonTemplate);
         }
     };
 
@@ -204,6 +204,22 @@ var updatePlayerBarSong = function() {
      $('.main-controls .play-pause').html(playerBarPauseButton);
 
 };
+
+var togglePlayFromPlayerBar = function () {
+    var currentlyPlayingCell = getSongNumberCell(currentlyPlayingSongNumber)
+    if (currentSoundFile.isPaused()) {
+        currentlyPlayingCell.html(pauseButtonTemplate);
+		$(this).html(playerBarPauseButton);
+        currentSoundFile.play();
+    }    
+    else {
+        currentlyPlayingCell.html(playButtonTemplate);
+		$(this).html(playerBarPlayButton);
+        currentSoundFile.pause();  
+    }
+};
+
+
  
 
 var playButtonTemplate = '<a class="album-song-button"><span class="ion-play"></span></a>';
@@ -217,6 +233,8 @@ var playerBarPlayButton = '<span class="ion-play"></span>';
 
 var $previousButton = $('.main-controls .previous');
  var $nextButton = $('.main-controls .next');
+var $playerBarButtonToggle =  $('.main-controls .play-pause');
+
 
 var currentlyPlayingSongNumber = null;
  var currentSongFromAlbum = null;
@@ -227,4 +245,5 @@ var currentVolume = 80;
      setCurrentAlbum(albumPicasso);
      $previousButton.click(previousSong);
      $nextButton.click(nextSong);
+     $playerBarButtonToggle.click(togglePlayFromPlayerBar);
  });
